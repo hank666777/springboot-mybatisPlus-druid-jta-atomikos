@@ -1,0 +1,65 @@
+server:
+  port: 8888
+spring:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy/MM/dd HH:mm:ss
+  jta:
+    # 交易管理器唯一標示符
+    transaction-manager-id: txManager
+    log-dir: transaction-logs
+    atomikos:
+      datasource:
+        borrow-connection-timeout: 10000
+        min-pool-size: 5
+        max-pool-size: 20
+      properties:
+        # 交易超時時間 300 0000ms 默認10 000ms
+        default-jta-timeout: 300000
+        max-actives: 50
+        max-timeout: 300000
+        enable-logging: true
+        logBaseDir: transaction-logs
+  datasource:
+    druid:
+      primarydb:
+        type: com.alibaba.druid.pool.xa.DruidXADataSource
+        name: primary
+        url: jdbc:mysql://127.0.0.1:3306/atomikos_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+        username: root
+        password: 123456
+        initialSize: 10
+        minIdle: 10
+        maxActive: 100
+        maxWait: 60000
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1 FROM DUAL
+        validationQueryTimeout: 10000
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+      secondarydb:
+        type: com.microsoft.sqlserver.jdbc.SQLServerXADataSource
+        name: secondary
+        url: jdbc:sqlserver://localhost:1433; databaseName=atomikos_test
+        username: sa
+        password: '<asdf1234'
+        initialSize: 10
+        minIdle: 10
+        maxActive: 100
+        maxWait: 60000
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1
+        validationQueryTimeout: 10000
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+mybatis-plus:
+  configuration:
+    lazy-loading-enabled: true
